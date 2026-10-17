@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sunsetguard-postgres
+    environment:
+      POSTGRES_DB: sunsetguard
+      POSTGRES_USER: sunsetguard
+      POSTGRES_PASSWORD: sunsetguard_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sunsetguard"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sunsetguard-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: sunsetguard-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - sunsetguard-network
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: sunsetguard-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: sunsetguard
+      RABBITMQ_DEFAULT_PASS: sunsetguard_dev_password
+    ports:
+      - "5672:5672"   # AMQP port
+      - "15672:15672" # Management UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sunsetguard-network
+
+  # Prometheus - disable until Phase 7 (hardening) to save memory
+  # Uncomment when you reach Phase 7
+  # prometheus:
+  #   image: prom/prometheus:v2.54.1
+  #   container_name: sunsetguard-prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+  #     - prometheus_data:/prometheus
+  #   command:
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
+  #     - '--storage.tsdb.path=/prometheus'
+  #   networks:
+  #     - sunsetguard-network
+
+  # Grafana - disable until Phase 7 (hardening) to save memory
+  # Uncomment when you reach Phase 7
+  # grafana:
+  #   image: grafana/grafana:11.2.2
+  #   container_name: sunsetguard-grafana
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     GF_SECURITY_ADMIN_USER: admin
+  #     GF_SECURITY_ADMIN_PASSWORD: admin
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #     - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+  #   depends_on:
+  #     - prometheus
+  #   networks:
+  #     - sunsetguard-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  rabbitmq_data:
+  # prometheus_data:
+  # grafana_data:
+
+networks:
+  sunsetguard-network:
+    driver: bridge
