@@ -4,7 +4,7 @@
 
 [![Build Status](https://github.com/rohanmeshram/SunsetGuard/workflows/Build%20and%20Test/badge.svg)](https://github.com/rohanmeshram/SunsetGuard/actions)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.org/)
+[![Java](https://img.shields.io/badge/Java-25-orange.svg)](https://openjdk.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4-brightgreen.svg)](https://spring.io/projects/spring-boot)
 
 **Status**: 🚧 In Development - Phase 0 (Foundation)
@@ -63,7 +63,7 @@ Plus: **block pull requests** that delete endpoints still in use.
 
 ## Quick Start
 
-**Prerequisites**: Docker, JDK 21, Maven
+**Prerequisites**: Docker, JDK 25, Maven
 
 ```bash
 # 1. Clone and start infrastructure
@@ -261,7 +261,7 @@ When someone opens a PR that removes `/v1/orders/{id}`:
 
 | Layer | Technology | Why |
 |-------|-----------|-----|
-| **Language** | Java 21 | LTS, modern features (records, sealed types, virtual threads) |
+| **Language** | Java 25 | Latest LTS, modern features and long-term support |
 | **Framework** | Spring Boot 3.4 | Industry standard, dependency injection, auto-configuration |
 | **Database** | PostgreSQL 16 | ACID transactions, upserts, partitioning, proven at scale |
 | **Cache** | Redis 7 | Token bucket, deduplication, HyperLogLog, distributed locks |

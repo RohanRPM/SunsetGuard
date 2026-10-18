@@ -72,8 +72,8 @@ SunsetGuard/
 
 **Download and install in this order:**
 
-1. **Java 21 JDK**
-   - Link: https://adoptium.net/temurin/releases/?version=21
+1. **Java 25 JDK**
+   - Link: https://adoptium.net/temurin/releases/?version=25
    - Choose: Windows x64, .msi installer
    - ✅ Check "Add to PATH"
 
@@ -89,7 +89,7 @@ SunsetGuard/
 
 **Verify:**
 ```bash
-java --version    # → openjdk 21.x.x
+java --version    # → openjdk 25.x.x
 mvn --version     # → Apache Maven 3.9.x
 docker --version  # → Docker version 24+
 ```
@@ -163,7 +163,7 @@ mvn clean install -DskipTests
 - [x] 2 commits made
 
 **Your Machine:**
-- [ ] Java 21 installed
+- [ ] Java 25 installed
 - [ ] Maven 3.9+ installed
 - [ ] Docker Desktop installed
 - [ ] All tools verified
@@ -364,7 +364,7 @@ You're 10% through Phase 0! 🎉
 
 **After Phase 8 (v0.1.0), you can say:**
 
-> Built **SunsetGuard**, an open-source API deprecation tracker (Java 21, Spring Boot 3.4, PostgreSQL, Redis, RabbitMQ) that shows which clients still call deprecated endpoints and whether removal is safe.
+> Built **SunsetGuard**, an open-source API deprecation tracker (Java 25, Spring Boot 3.4, PostgreSQL, Redis, RabbitMQ) that shows which clients still call deprecated endpoints and whether removal is safe.
 >
 > - Designed ingestion pipeline with **client-side aggregation** (reduces traffic 100-1000x), **idempotent consumers**, and **dead-letter handling**
 > - Achieved **N reports/sec sustained throughput** at **p95 latency of X ms** on commodity hardware (measured with Gatling)
@@ -391,7 +391,7 @@ You're 10% through Phase 0! 🎉
 **Right now, do this:**
 
 1. Read `docs/SETUP.md`
-2. Install Java 21, Maven, Docker Desktop
+2. Install Java 25, Maven, Docker Desktop
 3. Verify: `java --version && mvn --version && docker --version`
 4. Start services: `docker compose up -d`
 5. Build: `mvn clean install`
@@ -403,7 +403,7 @@ You're 10% through Phase 0! 🎉
 ---
 
 **Built with**:  
-☕ Java 21  
+☕ Java 25  
 🍃 Spring Boot 3.4  
 🐳 Docker Compose  
 📦 Maven  
