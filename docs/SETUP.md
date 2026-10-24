@@ -4,18 +4,18 @@
 
 Before starting SunsetGuard development, you need to install:
 
-### 1. Java Development Kit (JDK) 21
+### 1. Java Development Kit (JDK) 25
 
-**Download**: [Eclipse Temurin JDK 21](https://adoptium.net/temurin/releases/?version=21)
+**Download**: [Eclipse Temurin JDK 25](https://adoptium.net/temurin/releases/?version=25)
 
 - Choose: Windows x64, JDK, .msi installer
-- Install to default location: `C:\Program Files\Eclipse Adoptium\jdk-21.x.x`
+- Install to default location: `C:\Program Files\Eclipse Adoptium\jdk-25.x.x`
 - **Important**: Check "Add to PATH" during installation
 
 **Verify installation:**
 ```bash
 java --version
-# Should show: openjdk version "21.x.x"
+# Should show: openjdk version "25.x.x"
 ```
 
 ### 2. Apache Maven
