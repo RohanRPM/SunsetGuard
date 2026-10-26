@@ -1,419 +1,133 @@
-# 🎉 SunsetGuard - Phase 0 Complete!
+# SunsetGuard Quickstart (Phase 0)
 
-**Date**: October 17, 2026  
-**Time Spent**: ~2 hours (setup and documentation)  
-**Status**: ✅ Repository Foundation Complete
+**Status:** the foundation is built. Infrastructure, the Maven build, CI, and the
+design documents work today. There is **no runtime Java code yet** — the server
+starts in Phase 1. That is expected.
 
----
-
-## 📊 What We Built Today
-
-### Files Created: 17
-```
-✅ 2 Git commits
-✅ 5 Maven POMs (parent + 4 modules)
-✅ 1 Docker Compose configuration
-✅ 1 GitHub Actions CI workflow
-✅ 2 Architecture Decision Records
-✅ 5 Documentation files
-✅ 3 Project management files (LICENSE, .gitignore, CHANGELOG)
-```
-
-### Lines Written: ~2,600
-- Configuration: 800 lines
-- Documentation: 1,800 lines
+For the exact build order, read [docs/NEXT-STEPS.md](docs/NEXT-STEPS.md).
 
 ---
 
-## 🏗️ Project Structure
+## What works today
 
-```
-SunsetGuard/
-├── 📁 .github/workflows/
-│   └── build.yml                  # CI/CD pipeline
-│
-├── 📁 adr/
-│   ├── ADR-001-rabbitmq-over-kafka.md
-│   └── ADR-002-client-side-aggregation.md
-│
-├── 📁 docs/
-│   ├── SETUP.md                   # Environment setup guide ⭐
-│   ├── PHASE-0-CHECKLIST.md       # This phase's tasks
-│   └── PHASE-0-SUMMARY.md         # Quick reference ⭐
-│
-├── 📁 sunsetguard-server/         # Main application
-│   └── pom.xml
-│
-├── 📁 sunsetguard-spring-boot-starter/  # Client library
-│   └── pom.xml
-│
-├── 📁 sunsetguard-cli/            # Command-line tool
-│   └── pom.xml
-│
-├── 📁 sunsetguard-demo-orders/    # Demo API
-│   └── pom.xml
-│
-├── .gitignore                     # Ignore build artifacts
-├── CHANGELOG.md                   # Version history
-├── CONTRIBUTING.md                # Contribution guide
-├── docker-compose.yml             # Infrastructure services ⭐
-├── LICENSE                        # Apache 2.0
-├── pom.xml                        # Maven parent config ⭐
-└── README.md                      # Project overview ⭐
-```
-
-⭐ = Start here
+| Thing | State |
+|---|---|
+| Maven multi-module build (Java 25, Spring Boot 4.1.2) | ✅ Works |
+| Docker Compose: PostgreSQL 16, Redis 7, RabbitMQ 3.13 | ✅ Works |
+| GitHub Actions CI (build, tests, Trivy) | ✅ Works |
+| ADR-001 (RabbitMQ) and ADR-002 (client aggregation) | ✅ Written |
+| Server, starter, CLI, demo API | POM only (no code yet) |
 
 ---
 
-## 🎯 Quick Start Guide
+## 1. Check your tools
 
-### 1️⃣ Install Tools (30-60 min)
+You need **JDK 25**, **Maven 3.9+**, and **Docker Desktop**.
 
-**Download and install in this order:**
-
-1. **Java 25 JDK**
-   - Link: https://adoptium.net/temurin/releases/?version=25
-   - Choose: Windows x64, .msi installer
-   - ✅ Check "Add to PATH"
-
-2. **Maven 3.9+**
-   - Link: https://maven.apache.org/download.cgi
-   - Extract to: `C:\Program Files\Apache\maven`
-   - Add to PATH (see `docs/SETUP.md`)
-
-3. **Docker Desktop**
-   - Link: https://www.docker.com/products/docker-desktop/
-   - Install with WSL 2
-   - Set: 4GB RAM, 2 CPUs
-
-**Verify:**
-```bash
-java --version    # → openjdk 25.x.x
-mvn --version     # → Apache Maven 3.9.x
-docker --version  # → Docker version 24+
+```powershell
+java -version      # must say 25.x
+mvn -v             # "Java version" must say 25.x
+docker --version
 ```
+
+If `java -version` says 21 or 17, point `JAVA_HOME` at your JDK 25 first:
+
+```powershell
+$env:JAVA_HOME = "C:\Program Files\Java\jdk-25.0.2"
+$env:Path = "$env:JAVA_HOME\bin;$env:Path"
+mvn -v
+```
+
+To make it permanent: Windows Search → "Environment Variables" → set
+`JAVA_HOME` to the JDK 25 folder, then add `%JAVA_HOME%\bin` to `Path`.
+
+> Maven uses the JDK that `JAVA_HOME` points at, not necessarily the one on
+> `PATH`. Always check `mvn -v` before blaming the build.
 
 ---
 
-### 2️⃣ Push to GitHub (5 min)
+## 2. Start the infrastructure
 
-```bash
-# 1. Create repo on GitHub.com
-# Name: SunsetGuard
-# Visibility: Public
-# DON'T initialize with anything
-
-# 2. Add remote and push
-cd C:\Users\rohan\OneDrive\Desktop\Rohan\Projects\SunsetGuard
-git remote add origin https://github.com/YOUR-USERNAME/SunsetGuard.git
-git branch -M main
-git push -u origin main
-
-# 3. On GitHub, add:
-# Description: "Track deprecated API endpoint usage and know when it's safe to remove them"
-# Topics: java, spring-boot, api, deprecation, developer-tools, backend
-```
-
----
-
-### 3️⃣ Start Infrastructure (10 min)
-
-```bash
-# Start all services
+```powershell
 docker compose up -d
+docker compose ps
+```
 
-# Check status (all should be "healthy")
+Wait until PostgreSQL, Redis, and RabbitMQ show **healthy**.
+
+| Service | Address | Credentials |
+|---|---|---|
+| PostgreSQL | `localhost:5432` | `sunsetguard` / `sunsetguard_dev_password` |
+| Redis | `localhost:6379` | none in development |
+| RabbitMQ | `localhost:5672` | `sunsetguard` / `sunsetguard_dev_password` |
+| RabbitMQ UI | <http://localhost:15672> | same as above |
+
+On an 8 GB laptop, keep Docker Desktop at about 4 GB of memory and 2 CPUs.
+Prometheus and Grafana are intentionally not in the default Compose file; they
+arrive in Phase 7.
+
+---
+
+## 3. Build everything
+
+```powershell
+mvn clean install
+```
+
+The first run downloads dependencies and takes several minutes. A successful
+run ends with `BUILD SUCCESS` for all four modules.
+
+---
+
+## 4. Prove the baseline
+
+```powershell
+# 1. Build is reproducible
+mvn clean install
+
+# 2. Containers are healthy
 docker compose ps
 
-# Open RabbitMQ management UI
-# http://localhost:15672
-# Username: sunsetguard
-# Password: sunsetguard_dev_password
+# 3. RabbitMQ answers
+start http://localhost:15672
+
+# 4. Git is clean after the build
+git status
 ```
 
-**Services running:**
-- ✅ PostgreSQL 16 (port 5432)
-- ✅ Redis 7 (port 6379)
-- ✅ RabbitMQ 3.13 (port 5672, UI: 15672)
+You are ready for Phase 1 when all four pass **and** CI is green on GitHub.
 
 ---
 
-### 4️⃣ Build Project (5 min)
+## Troubleshooting
 
-```bash
-# First build (downloads dependencies, takes 5-10 min)
-mvn clean install -DskipTests
-
-# Should end with: BUILD SUCCESS
-```
-
----
-
-## ✅ Phase 0 Completion Checklist
-
-**Repository Structure:**
-- [x] Maven multi-module setup
-- [x] Docker Compose configuration
-- [x] GitHub Actions CI pipeline
-- [x] Architecture Decision Records
-- [x] Comprehensive documentation
-- [x] Apache 2.0 License
-- [x] Git repository initialized
-- [x] 2 commits made
-
-**Your Machine:**
-- [ ] Java 25 installed
-- [ ] Maven 3.9+ installed
-- [ ] Docker Desktop installed
-- [ ] All tools verified
-- [ ] Docker services started
-- [ ] Project builds successfully
-- [ ] Repository pushed to GitHub
-- [ ] CI pipeline runs (first time)
+| Symptom | Cause | Fix |
+|---|---|---|
+| `release version 25 not supported` | Maven is using an older JDK | Set `JAVA_HOME` to JDK 25 and reopen the terminal |
+| `Cannot connect to Docker daemon` | Docker Desktop is not running | Start Docker Desktop and wait for "running" |
+| `Port 5432 already in use` | Another PostgreSQL is running | Stop it, or change the host port in `docker-compose.yml` |
+| Containers restarting | Port conflict or low memory | `docker compose logs postgres` and raise Docker memory |
+| Build fails in a module | Running from the wrong folder | Run `mvn clean install` from the repository root |
 
 ---
 
-## 📚 Key Documents to Read
+## What comes next
 
-### Must Read First:
-1. **`docs/SETUP.md`** - Install Java, Maven, Docker
-2. **`README.md`** - Project overview and architecture
-3. **`docker-compose.yml`** - See what services you're running
+Phase 1 adds the first real code:
 
-### For Learning:
-4. **`adr/ADR-001-rabbitmq-over-kafka.md`** - Why RabbitMQ?
-5. **`adr/ADR-002-client-side-aggregation.md`** - Why aggregate?
+1. Flyway migrations for projects, API keys, and endpoints.
+2. JPA entities and repositories.
+3. REST controllers with validation and Problem Details errors.
+4. API-key authentication and tenant-isolation tests.
+5. OpenAPI documentation.
 
-### For Reference:
-6. **`docs/PHASE-0-CHECKLIST.md`** - All Phase 0 tasks
-7. **`START_HERE.md`** (in parent dir) - Full 13-week roadmap
+Then the starter (Phase 2), the RabbitMQ pipeline (Phase 3), verdicts
+(Phase 4), the dashboard (Phase 5), the CLI and GitHub Action (Phase 6),
+hardening (Phase 7), and launch (Phase 8).
 
----
-
-## 🎓 What You're Learning
-
-### This Week (Phase 0):
-- ✅ Maven multi-module projects
-- ✅ Docker Compose for local development
-- ✅ GitHub Actions CI/CD basics
-- ✅ Open-source project structure
-- ✅ Architecture documentation (ADRs)
-
-### Next Week (Phase 1):
-- Spring Boot REST APIs
-- PostgreSQL + JPA
-- Flyway database migrations
-- Spring Security
-- Testcontainers
+**Do not start Phase 2 before Phase 1's exit test passes.** The pipeline is the
+critical path; the dashboard is not.
 
 ---
 
-## 🚀 Next Phase Preview
-
-**Phase 1: Server Core (Weeks 2-3, ~20 hours)**
-
-You'll build:
-- ✨ REST API for managing projects
-- ✨ API key authentication (hashed, secure)
-- ✨ Endpoint registry (CRUD operations)
-- ✨ PostgreSQL database with Flyway migrations
-- ✨ Multi-tenant isolation (test that project A can't see project B's data)
-- ✨ OpenAPI documentation
-
-**First actual code you'll write:**
-```java
-@Entity
-@Table(name = "projects")
-public class Project {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    private String name;
-    private LocalDateTime createdAt;
-    // ...
-}
-```
-
----
-
-## 🎯 When to Move to Phase 1
-
-✅ Ready when ALL are true:
-- [ ] Java, Maven, Docker installed and verified
-- [ ] `docker compose ps` shows all services healthy
-- [ ] `mvn clean install` completes successfully
-- [ ] Repository pushed to GitHub
-- [ ] GitHub Actions CI passed (green ✓)
-- [ ] You've explored RabbitMQ UI (http://localhost:15672)
-- [ ] You understand what each service does
-
-**Don't rush!** A solid foundation saves time later.
-
----
-
-## 💡 Self-Test Questions
-
-Answer these before moving to Phase 1:
-
-1. **What are the 4 Maven modules?**
-   <details>
-   <summary>Answer</summary>
-   sunsetguard-server, sunsetguard-spring-boot-starter, sunsetguard-cli, sunsetguard-demo-orders
-   </details>
-
-2. **What does Redis do in SunsetGuard?**
-   <details>
-   <summary>Answer</summary>
-   Caching (API keys, verdicts), rate limiting, duplicate detection, distributed locks
-   </details>
-
-3. **Why RabbitMQ instead of Kafka?**
-   <details>
-   <summary>Answer</summary>
-   Lower memory footprint (150MB vs 600MB+), fits 8GB laptop, teaches same messaging concepts
-   </details>
-
-4. **What problem does SunsetGuard solve?**
-   <details>
-   <summary>Answer</summary>
-   Tells backend teams exactly who is still calling deprecated endpoints, with a safe-to-remove verdict
-   </details>
-
-5. **What's stored in PostgreSQL?**
-   <details>
-   <summary>Answer</summary>
-   Projects, endpoints, consumers, usage rollups (hourly/daily), verdicts, API keys (hashed)
-   </details>
-
----
-
-## 🐛 Common Issues & Fixes
-
-### "mvn: command not found"
-→ Maven not in PATH. Restart terminal after adding to PATH.
-
-### "Cannot connect to Docker daemon"
-→ Docker Desktop not running. Start it and wait for "running" status.
-
-### "Port 5432 already in use"
-→ Another PostgreSQL running. Stop it or change ports in docker-compose.yml.
-
-### Build fails with "package does not exist"
-→ Run `mvn clean install` from root directory, not a module.
-
-### Testcontainers fails
-→ Docker Desktop not running or not enough memory allocated.
-
-**Full troubleshooting**: See `docs/SETUP.md`
-
----
-
-## 📈 Progress Tracking
-
-### Time Invested
-- Phase 0 planning & setup: ~2 hours ✅
-- Remaining in Phase 0: ~8 hours (tool installation, learning, exploration)
-- **Total Phase 0**: 10 hours
-
-### Milestones
-- [x] Project conceived and blueprint created
-- [x] Competitive research completed
-- [x] Repository structure created
-- [x] Documentation written
-- [ ] Environment set up
-- [ ] Infrastructure running
-- [ ] First build successful
-- [ ] **Phase 0 complete** → Ready for Phase 1
-
-### 13-Week Journey
-```
-Week 1  ████░░░░░░░░  Phase 0 (in progress)
-Week 2  ░░░░░░░░░░░░  Phase 1
-Week 3  ░░░░░░░░░░░░  Phase 1
-Week 4  ░░░░░░░░░░░░  Phase 2
-...
-Week 12 ░░░░░░░░░░░░  Phase 8 (Launch)
-Week 13 ░░░░░░░░░░░░  Phase 9 (Cloud Deploy)
-```
-
-You're 10% through Phase 0! 🎉
-
----
-
-## 🌟 What Makes This Special
-
-**Not just another tutorial project:**
-- ✅ Solves a REAL problem teams face daily
-- ✅ No close open-source competitors found
-- ✅ Covers full backend stack (API, queue, cache, DB)
-- ✅ Production patterns (fail-open, idempotency, multi-tenant)
-- ✅ Professional structure (CI/CD, ADRs, docs)
-- ✅ Interview-ready architecture decisions
-
-**Your advantage:**
-- Data engineering background (you understand rollups and aggregation)
-- Already built a full-stack project (know the process)
-- Clear 13-week plan (no scope creep)
-- Live deployment planned (not just local)
-
----
-
-## 🎁 Bonus: Resume Bullet (When Done)
-
-**After Phase 8 (v0.1.0), you can say:**
-
-> Built **SunsetGuard**, an open-source API deprecation tracker (Java 25, Spring Boot 3.4, PostgreSQL, Redis, RabbitMQ) that shows which clients still call deprecated endpoints and whether removal is safe.
->
-> - Designed ingestion pipeline with **client-side aggregation** (reduces traffic 100-1000x), **idempotent consumers**, and **dead-letter handling**
-> - Achieved **N reports/sec sustained throughput** at **p95 latency of X ms** on commodity hardware (measured with Gatling)
-> - Cut stored data **X times** with hourly/daily rollups and retention jobs
-> - Shipped **auto-configured Spring Boot starter**, **GitHub Action for PR checks**, Docker images on GHCR, and **live deployment** on Railway.app
-> - **X+ GitHub stars**, full test coverage with Testcontainers, documented with ADRs and MkDocs
-
-*(Fill in real numbers after Phase 7 load testing)*
-
----
-
-## 🔗 Quick Links
-
-- **This project**: `C:\Users\rohan\OneDrive\Desktop\Rohan\Projects\SunsetGuard`
-- **Setup guide**: `docs/SETUP.md`
-- **Phase checklist**: `docs/PHASE-0-CHECKLIST.md`
-- **Full roadmap**: `START_HERE.md` (parent directory)
-- **RabbitMQ UI**: http://localhost:15672 (after Docker up)
-
----
-
-## 🚦 Your Next Action
-
-**Right now, do this:**
-
-1. Read `docs/SETUP.md`
-2. Install Java 25, Maven, Docker Desktop
-3. Verify: `java --version && mvn --version && docker --version`
-4. Start services: `docker compose up -d`
-5. Build: `mvn clean install`
-6. Push to GitHub
-7. ✅ **Phase 0 complete!**
-
-**Then**: Take a break, celebrate the foundation, and start Phase 1 when ready! 🎉
-
----
-
-**Built with**:  
-☕ Java 25  
-🍃 Spring Boot 3.4  
-🐳 Docker Compose  
-📦 Maven  
-❤️  Passion for clean architecture
-
-**Creator**: Rohan Meshram  
-**License**: Apache 2.0  
-**Status**: Phase 0 - Foundation Complete ✅
-
----
-
-_Generated: 2026-10-17_  
-_Next Update: After Phase 1 (Server Core)_
+_Updated: 2026-10-26_

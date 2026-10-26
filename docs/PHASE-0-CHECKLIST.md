@@ -45,7 +45,7 @@
 
 ### GitHub Actions CI
 - [x] `.github/workflows/build.yml` created
-- [x] Build job (Java 21, Maven)
+- [x] Build job (Java 25, Maven)
 - [x] Test job
 - [x] Coverage report (JaCoCo)
 - [x] Dependency scanning (Trivy)
@@ -69,9 +69,10 @@
 ## Environment Setup (Your Machine)
 
 ### Prerequisites to Install
-- [ ] **Java 21 (JDK)** - [Download Eclipse Temurin](https://adoptium.net/temurin/releases/?version=21)
+- [ ] **Java 25 (JDK)** - [Download Eclipse Temurin](https://adoptium.net/temurin/releases/?version=25)
   - Verify: `java --version`
-  - Should show: openjdk version "21.x.x"
+  - Should show: openjdk version "25.x.x"
+  - Set `JAVA_HOME` to the JDK 25 folder and confirm `mvn -v` also reports 25.x
   
 - [ ] **Maven 3.9+** - [Download from Apache](https://maven.apache.org/download.cgi)
   - Install to: `C:\Program Files\Apache\maven`

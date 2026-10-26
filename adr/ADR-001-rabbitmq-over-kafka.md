@@ -76,7 +76,7 @@ RabbitMQ's traditional queue model is sufficient and actually simpler for the MV
    - Ordering guarantees per partition
    - When to choose Kafka vs RabbitMQ
 2. **Document the trade-off** in README with "Why not Kafka?" section
-3. **Future enhancement**: After MVP (Phase 9+), spin up Kafka on a free cloud VM or second machine to verify hands-on understanding
+3. **Future enhancement**: After MVP (post-v0.1.0), spin up Kafka on a free cloud VM or second machine to verify hands-on understanding
 4. **Interview prep**: Be ready to discuss both technologies and explain the choice
 
 ## Implementation Notes

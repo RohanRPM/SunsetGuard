@@ -18,12 +18,23 @@ java --version
 # Should show: openjdk version "25.x.x"
 ```
 
+**Set `JAVA_HOME`** (important — Maven uses it):
+1. Windows Search → "Environment Variables"
+2. New system variable: `JAVA_HOME` = `C:\Program Files\Java\jdk-25.0.2`
+   (use the exact folder that exists on your machine)
+3. Add `%JAVA_HOME%\bin` to the top of `Path`
+4. Reopen the terminal and run `mvn -v`; the "Java version" line must say 25.x
+
+Maven ignores the JDK on `PATH` when `JAVA_HOME` points somewhere else. A build
+that says "release version 25 not supported" almost always has the wrong
+`JAVA_HOME`.
+
 ### 2. Apache Maven
 
 **Download**: [Maven 3.9.9+](https://maven.apache.org/download.cgi)
 
 **Installation Steps:**
-1. Download `apache-maven-3.9.9-bin.zip`
+1. Download `apache-maven-3.9.9-bin.zip` (or newer; 3.10.x is current)
 2. Extract to: `C:\Program Files\Apache\maven`
 3. Add to PATH:
    - Windows Search → "Environment Variables"
@@ -307,7 +318,7 @@ After completing this setup:
 1. ✅ All tools installed and verified
 2. ✅ Docker services running
 3. ✅ Project builds successfully
-4. → **Ready for Phase 1!** See [START_HERE.md](../START_HERE.md)
+4. → **Ready for Phase 1!** See [NEXT-STEPS.md](NEXT-STEPS.md)
 
 ---
 

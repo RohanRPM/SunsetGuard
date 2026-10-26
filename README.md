@@ -5,9 +5,9 @@
 [![Build Status](https://github.com/rohanmeshram/SunsetGuard/workflows/Build%20and%20Test/badge.svg)](https://github.com/rohanmeshram/SunsetGuard/actions)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Java](https://img.shields.io/badge/Java-25-orange.svg)](https://openjdk.org/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-brightgreen.svg)](https://spring.io/projects/spring-boot)
 
-**Status**: 🚧 In Development - Phase 0 (Foundation)
+**Status**: ✅ Phase 0 (Foundation) complete · 🚧 Phase 1 (Server Core) is next
 
 ---
 
@@ -43,27 +43,30 @@ Plus: **block pull requests** that delete endpoints still in use.
 
 ## Features
 
-### MVP (Current Focus)
-- ✅ Drop-in Spring Boot starter (one dependency, zero config)
-- ✅ Consumer-aware tracking (knows WHO calls, not just HOW MANY)
-- ✅ Automatic deprecation workflow (mark → track → notify → verdict)
-- ✅ Safe-to-remove verdict with confidence levels
-- ✅ Standard `Deprecation` and `Sunset` HTTP headers (RFC 8594, 9745)
-- ✅ Notifications (Slack, Discord, email)
-- ✅ Dashboard (Thymeleaf + htmx, no frontend build)
-- ✅ CLI + GitHub Action (block unsafe deletions in PRs)
+> These are the **MVP target**, not finished features. The repository today contains the foundation only.
+> See [docs/NEXT-STEPS.md](docs/NEXT-STEPS.md) for the build order.
 
-### Coming Soon
-- 🔄 Prometheus metrics + Grafana dashboards
-- 🔄 Consumer-to-team mapping
-- 🔄 Weekly digest emails
-- 🔄 OpenTelemetry support
+- 🔜 Drop-in Spring Boot starter (one dependency, zero config) — Phase 2
+- 🔜 Consumer-aware tracking (knows WHO calls, not just HOW MANY) — Phase 2
+- 🔜 Automatic deprecation workflow (mark → track → notify → verdict) — Phases 3–4
+- 🔜 Safe-to-remove verdict with confidence levels — Phase 4
+- 🔜 Standard `Deprecation` and `Sunset` HTTP headers (RFC 9745, RFC 8594) — Phase 2
+- 🔜 Notifications (Slack, Discord, email) — Phase 4
+- 🔜 Dashboard (Thymeleaf + htmx, no frontend build) — Phase 5
+- 🔜 CLI + GitHub Action (block unsafe deletions in PRs) — Phase 6
+
+### Later
+- ⏳ Prometheus metrics + Grafana dashboards (Phase 7)
+- ⏳ Consumer-to-team mapping (after v0.1.0)
+- ⏳ Weekly digest emails (after v0.1.0)
+- ⏳ OpenTelemetry support (stretch)
 
 ---
 
 ## Quick Start
 
-**Prerequisites**: Docker, JDK 25, Maven
+**Prerequisites**: Docker, JDK 25, Maven. Confirm `mvn -v` reports Java 25
+(Maven follows `JAVA_HOME`, not the `java` on `PATH`).
 
 ```bash
 # 1. Clone and start infrastructure
@@ -77,19 +80,24 @@ docker compose ps
 # 2. Build the project
 mvn clean install
 
-# 3. Start the server
-cd sunsetguard-server
-mvn spring-boot:run
+# 3. Start the server (from Phase 1 onward)
+# cd sunsetguard-server
+# mvn spring-boot:run
 
-# 4. Open dashboard
+# 4. Open the dashboard (from Phase 5 onward)
 # http://localhost:8080
 ```
+
+> **Phase 0 reality check:** the infrastructure and the Maven build work today.
+> The server has no runtime code yet, so `spring-boot:run` will not start an app
+> until Phase 1. That is expected, not a broken setup.
 
 **Services running:**
 - PostgreSQL: `localhost:5432`
 - Redis: `localhost:6379`
 - RabbitMQ: `localhost:5672` (management UI at `localhost:15672`)
-- SunsetGuard Server: `localhost:8080`
+
+The server on `localhost:8080` arrives in Phase 1.
 
 ---
 
@@ -262,7 +270,7 @@ When someone opens a PR that removes `/v1/orders/{id}`:
 | Layer | Technology | Why |
 |-------|-----------|-----|
 | **Language** | Java 25 | Latest LTS, modern features and long-term support |
-| **Framework** | Spring Boot 3.4 | Industry standard, dependency injection, auto-configuration |
+| **Framework** | Spring Boot 4.1.2 | Spring Framework 7, auto-configuration, DI, web, scheduling, AMQP |
 | **Database** | PostgreSQL 16 | ACID transactions, upserts, partitioning, proven at scale |
 | **Cache** | Redis 7 | Token bucket, deduplication, HyperLogLog, distributed locks |
 | **Queue** | RabbitMQ 3.13 | Lightweight (150MB), teaches core messaging patterns |
@@ -320,18 +328,17 @@ SunsetGuard/
 
 | Phase | Weeks | Goal | Status |
 |-------|-------|------|--------|
-| **Phase 0** | 1 | Foundation (repo, Docker, CI) | 🚧 In Progress |
-| **Phase 1** | 2-3 | Server core (projects, keys, endpoints) | ⏳ Not Started |
-| **Phase 2** | 4-5 | Starter library (filter, aggregator) | ⏳ Not Started |
-| **Phase 3** | 6-7 | Pipeline (ingest → RabbitMQ → PostgreSQL) | ⏳ Not Started |
-| **Phase 4** | 8 | Verdict engine + notifications | ⏳ Not Started |
-| **Phase 5** | 9 | Dashboard (Thymeleaf + htmx) | ⏳ Not Started |
-| **Phase 6** | 10 | CLI + GitHub Action | ⏳ Not Started |
-| **Phase 7** | 11 | Hardening (metrics, load tests, security) | ⏳ Not Started |
-| **Phase 8** | 12 | Launch (docs, blog, v0.1.0 release) | ⏳ Not Started |
-| **Phase 9** | 13 | Cloud deployment (Railway.app) | ⏳ Not Started |
+| **Phase 0** | 1 | Foundation (repo, Docker, CI, ADRs) | ✅ Complete |
+| **Phase 1** | 2-3 | Server core (projects, keys, endpoints) | ⏳ Next |
+| **Phase 2** | 4-5 | Starter library (filter, aggregator) | ⏳ Not started |
+| **Phase 3** | 6-7 | Pipeline (ingest → RabbitMQ → PostgreSQL) | ⏳ Not started |
+| **Phase 4** | 8 | Verdict engine + notifications | ⏳ Not started |
+| **Phase 5** | 9 | Dashboard (Thymeleaf + htmx) | ⏳ Not started |
+| **Phase 6** | 10 | CLI + GitHub Action | ⏳ Not started |
+| **Phase 7** | 11 | Hardening (metrics, load tests, security) | ⏳ Not started |
+| **Phase 8** | 12 | Launch (docs, blog, v0.1.0 release) | ⏳ Not started |
 
-**Target**: v0.1.0 by January 2027
+**Target**: v0.1.0 by January 2027. Hosting stays local; a public demo is optional and is not a phase.
 
 ---
 
@@ -345,7 +352,7 @@ This is currently a solo learning project, but contributions will be welcome aft
 3. 📖 Improve documentation
 4. 🔍 Review PRs
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) (coming in Phase 8).
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow.
 
 ---
 
@@ -379,7 +386,7 @@ This license:
 
 ## Resources
 
-- [Project Blueprint](START_HERE.md) - Complete 13-week plan
+- [Next Steps](docs/NEXT-STEPS.md) - The exact build order, phase by phase
 - [Architecture Decision Records](adr/) - Why we chose what
 - [Spring Boot Reference](https://docs.spring.io/spring-boot/docs/current/reference/html/)
 - [RabbitMQ Tutorials](https://www.rabbitmq.com/getstarted.html)
@@ -389,4 +396,4 @@ This license:
 
 **Questions?** Open an issue or reach out on [Twitter/X](https://twitter.com/your-handle)
 
-**Status**: 🚧 Phase 0 - Setting up foundation (Oct 2026)
+**Status**: ✅ Phase 0 foundation complete · Phase 1 next (Oct 2026)

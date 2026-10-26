@@ -49,29 +49,16 @@
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- Spring Boot 3.x (latest stable as of 2026) -->
-        <spring-boot.version>3.4.0</spring-boot.version>
-
-        <!-- Database -->
-        <postgresql.version>42.7.3</postgresql.version>
-        <flyway.version>10.20.0</flyway.version>
-
-        <!-- Redis -->
-        <lettuce.version>6.4.0.RELEASE</lettuce.version>
-
-        <!-- Messaging -->
-        <rabbitmq.version>5.21.0</rabbitmq.version>
+        <!-- Spring Boot 4.1.x: current minor line, Spring Framework 7 -->
+        <spring-boot.version>4.1.2</spring-boot.version>
 
         <!-- Testing -->
-        <junit.version>5.11.2</junit.version>
-        <testcontainers.version>1.20.2</testcontainers.version>
-        <mockito.version>5.14.1</mockito.version>
-        <assertj.version>3.26.3</assertj.version>
+        <testcontainers.version>1.21.4</testcontainers.version>
 
         <!-- Other -->
-        <lombok.version>1.18.34</lombok.version>
+        <lombok.version>1.18.48</lombok.version>
         <picocli.version>4.7.6</picocli.version>
-        <jacoco.version>0.8.12</jacoco.version>
+        <jacoco.version>0.8.16</jacoco.version>
     </properties>
 
     <dependencyManagement>
@@ -92,13 +79,6 @@
                 <version>${testcontainers.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-
-            <!-- PostgreSQL -->
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>${postgresql.version}</version>
             </dependency>
 
             <!-- Lombok -->

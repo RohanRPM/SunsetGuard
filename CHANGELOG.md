@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Upgraded the build to Spring Boot 4.1.2 and Spring Framework 7.
+- Upgraded Lombok to 1.18.48, JaCoCo to 0.8.16, springdoc to 3.2.0, and
+  Testcontainers to 1.21.4.
+- Removed the unused version properties and the explicit PostgreSQL version so
+  the Spring Boot BOM owns dependency versions.
+- Corrected the documentation to match the real Phase 0 state: foundation
+  built, runtime code not started.
+- Added `docs/NEXT-STEPS.md`, the ordered build plan for Phases 1–8.
+- Removed the unbuilt "Phase 9 cloud deployment" from the roadmap; hosting is
+  optional and local-first.
+
 ### Phase 0 - Foundation (Week 1)
 - Initial project structure
 - Maven multi-module setup
